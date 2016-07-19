@@ -1,11 +1,11 @@
 # pbwatch
 
-`pbwatch` always display current clibpard text on loop.
+`pbwatch` - display and update current clipboard text on terminal.
 
 ## Features
 
-* Displaying current cliboard buffer to your terminal in foreground.
-* Send notification to notification center when text on cliboard changes.
+* Display current cliboard text to your terminal in foreground.
+* Send event to notification center when you copy new text.
 
 ## Requirements
 
@@ -17,7 +17,7 @@
 
 ## Usage
 
-Just run `pbwatch` on your terminal.
+Just run `pbwatch`,
 
 ```
 $ pbwatch
@@ -25,4 +25,5 @@ Here text you pasted before
 
 ```
 
-Then, paste something by `⌘ + c`. The screen of your terminal will change, and notification will be sent.
+Then, paste something by `⌘ + c`. The text that you've just copied will appear to the terminal screen. Also the event will be sent to the notification center.
+
