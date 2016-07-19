@@ -41,6 +41,7 @@ func main() {
 			note := gosxnotifier.NewNotification(text)
 			note.Title = "pbwatch"
 			note.Subtitle = "Pasted!"
+			note.Group = "pbwatch"
 
 			err := note.Push()
 			if err != nil {
