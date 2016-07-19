@@ -37,7 +37,7 @@ func main() {
 		text := C.GoString(C.getTextFromClipboard())
 
 		// To desktop notification
-		if prevText != "" && prevText != text {
+		if prevText != "" && prevText != text && text != "" {
 			note := gosxnotifier.NewNotification(text)
 			note.Title = "pbwatch"
 			note.Subtitle = "Pasted!"
