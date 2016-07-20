@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/deckarep/gosx-notifier"
 	"log"
@@ -24,6 +25,11 @@ const char* getTextFromClipboard() {
 import "C"
 
 func main() {
+	var optNotify bool
+	flag.BoolVar(&optNotify, "n", false, "Popup copy event")
+	flag.BoolVar(&optNotify, "notification", false, "Popup copy event")
+	flag.Parse()
+
 	interval := 500 * time.Millisecond
 	var prevText string
 
@@ -37,7 +43,7 @@ func main() {
 		text := C.GoString(C.getTextFromClipboard())
 
 		// To desktop notification
-		if prevText != "" && prevText != text && text != "" {
+		if optNotify && prevText != "" && prevText != text && text != "" {
 			note := gosxnotifier.NewNotification(text)
 			note.Title = "pbwatch"
 			note.Subtitle = "Pasted!"
