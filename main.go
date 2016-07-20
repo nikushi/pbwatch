@@ -24,6 +24,12 @@ const char* getTextFromClipboard() {
 */
 import "C"
 
+func clearScreen() {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+}
+
 func main() {
 	var optNotify bool
 	flag.BoolVar(&optNotify, "n", false, "Popup copy event")
@@ -34,10 +40,6 @@ func main() {
 	var prevText string
 
 	for {
-		// clear current screen
-		cmd := exec.Command("clear")
-		cmd.Stdout = os.Stdout
-		cmd.Run()
 
 		// get buffer
 		text := C.GoString(C.getTextFromClipboard())
@@ -56,7 +58,10 @@ func main() {
 		}
 
 		// To terminal
-		fmt.Println(text)
+		if prevText == "" || (prevText != text && text != "") {
+			clearScreen()
+			fmt.Println(text)
+		}
 
 		// memo
 		prevText = text
