@@ -10,24 +10,22 @@ import (
 	"time"
 )
 
-/*
-#cgo CFLAGS: -x objective-c
-#cgo LDFLAGS: -framework Cocoa
-#import <Cocoa/Cocoa.h>
-
-const char* getTextFromClipboard() {
-	NSPasteboard* pasteboard = [NSPasteboard generalPasteboard];
-	NSString* pbBuf = [pasteboard stringForType:NSStringPboardType];
-	const char *strc = [pbBuf UTF8String];
-	return strc;
-}
-*/
-import "C"
-
 func clearScreen() {
 	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
+}
+
+func sendNotification(text string) {
+	note := gosxnotifier.NewNotification(text)
+	note.Title = "pbwatch"
+	note.Subtitle = "Pasted!"
+	note.Group = "pbwatch"
+
+	err := note.Push()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
@@ -37,35 +35,28 @@ func main() {
 	flag.Parse()
 
 	interval := 500 * time.Millisecond
-	var prevText string
 
-	for {
+	pbwatch := NewPbwatch(interval)
+	notifyCh := make(chan string)
+	go func() {
+		// suppress notification on boot
+		text := <-notifyCh
+		clearScreen()
+		fmt.Println(text)
 
-		// get buffer
-		text := C.GoString(C.getTextFromClipboard())
-
-		// To desktop notification
-		if optNotify && prevText != "" && prevText != text && text != "" {
-			note := gosxnotifier.NewNotification(text)
-			note.Title = "pbwatch"
-			note.Subtitle = "Pasted!"
-			note.Group = "pbwatch"
-
-			err := note.Push()
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
-
-		// To terminal
-		if prevText == "" || (prevText != text && text != "") {
+		// then run loop
+		for text := range notifyCh {
 			clearScreen()
 			fmt.Println(text)
+			if optNotify {
+				sendNotification(text)
+			}
 		}
+	}()
 
-		// memo
-		prevText = text
+	pbwatch.Start(notifyCh)
 
-		time.Sleep(interval)
-	}
+	// wait for loop above
+	pbwatch.Wait()
+
 }
