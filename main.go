@@ -19,7 +19,7 @@ func clearScreen() {
 func sendNotification(text string) {
 	note := gosxnotifier.NewNotification(text)
 	note.Title = "pbwatch"
-	note.Subtitle = "Pasted!"
+	note.Subtitle = "Copied!"
 	note.Group = "pbwatch"
 
 	err := note.Push()
