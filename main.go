@@ -10,6 +10,19 @@ import (
 	"time"
 )
 
+const helpText = `Usage: pbwatch [-n]
+
+  pbwatch - display and update current clipboard text on terminal
+
+Options:
+	-n     Send event to desktop notification center
+
+`
+
+func printUsage() {
+	fmt.Fprintf(os.Stderr, helpText)
+}
+
 func clearScreen() {
 	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
@@ -30,9 +43,15 @@ func sendNotification(text string) {
 
 func main() {
 	var optNotify bool
-	flag.BoolVar(&optNotify, "n", false, "Popup copy event")
-	flag.BoolVar(&optNotify, "notification", false, "Popup copy event")
-	flag.Parse()
+
+	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	flags.Usage = func() { printUsage() }
+	flags.BoolVar(&optNotify, "n", false, "Popup copy event")
+	flags.BoolVar(&optNotify, "notification", false, "Popup copy event")
+	if err := flags.Parse(os.Args[1:]); err != nil {
+		flags.Usage()
+		os.Exit(1)
+	}
 
 	interval := 500 * time.Millisecond
 
