@@ -2,6 +2,8 @@
 
 `pbwatch` - display and update current clipboard text on terminal.
 
+![demo](http://orihubon.com/images/20160721-pbwatch-demo.gif)
+
 ## Features
 
 * Display current cliboard text to your terminal in foreground.
