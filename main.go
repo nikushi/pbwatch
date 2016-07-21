@@ -10,12 +10,15 @@ import (
 	"time"
 )
 
+const Version = "0.1.0"
+
 const helpText = `Usage: pbwatch [-n]
 
   pbwatch - display and update current clipboard text on terminal
 
 Options:
-	-n     Send event to desktop notification center
+	-n           Send event to desktop notification center
+	-version     Print version
 
 `
 
@@ -43,14 +46,21 @@ func sendNotification(text string) {
 
 func main() {
 	var optNotify bool
+	var optVersion bool
 
 	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	flags.Usage = func() { printUsage() }
 	flags.BoolVar(&optNotify, "n", false, "Popup copy event")
 	flags.BoolVar(&optNotify, "notification", false, "Popup copy event")
+	flags.BoolVar(&optVersion, "version", false, "Version")
 	if err := flags.Parse(os.Args[1:]); err != nil {
 		flags.Usage()
 		os.Exit(1)
+	}
+
+	if optVersion {
+		fmt.Fprintf(os.Stderr, "pbwatch version %s\n", Version)
+		os.Exit(0)
 	}
 
 	interval := 500 * time.Millisecond
