@@ -10,6 +10,10 @@
 
 ## Install
 
+Download pbwatch from [release page](https://github.com/niku4i/pbwatch/releases) and place it in `$PATH` directory.
+
+Or if you have `go` compiler, you can build and install it:
+
     go get github.com/niku4i/pbwatch
 
 ## Usage
